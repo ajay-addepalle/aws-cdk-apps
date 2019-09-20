@@ -1,26 +1,28 @@
 {
+  "AWSTemplateFormatVersion" : "2010-09-09",
   "Resources": {
     "batchsubmiteventrule": {
       "Type": "AWS::Events::Rule",
       "Properties": {
         "Description": "Event rule that submits job to batch queue",
         "RoleArn": "arn:aws:iam::885860564745:role/service-role/AWS_Events_Invoke_Batch_Job_Queue_296665447",
+        "ScheduleExpression": "cron(0 9,18 * * ? *)",
         "State": "DISABLED",
-        "ScheduleExpression": "cron(0 0 12 1/1 * ? *)",
         "Targets": [
           {
-            "Arn": "arn:aws:batch:us-east-2:885860564745:job-queue/queue-a",
             "Id": "scheduler-batch-job-submit",
+            "Arn": "arn:aws:batch:us-east-2:885860564745:job-queue/queue-a",
+            "RoleArn": "arn:aws:iam::885860564745:role/service-role/AWS_Events_Invoke_Batch_Job_Queue_296665447",
             "BatchParameters": {
               "JobDefinition": "arn:aws:batch:us-east-2:885860564745:job-definition/job-a:1",
-              "RetryStrategy": {
-                "Attempts": 5
-              },
-              "JobName": "job-a-1"
+              "JobName": "say-hello"
             }
           }
         ]
       }
+    },
+    "batchsubmiteventTarget": {
+      "Type": ""
     }
   }
 }

@@ -1,10 +1,13 @@
 import cdk = require("@aws-cdk/core");
 import batch = require("@aws-cdk/aws-batch");
+import lambda = require("@aws-cdk/aws-lambda");
+import path = require('path');
 import cloudwatch = require("@aws-cdk/aws-cloudwatch");
 import events = require("@aws-cdk/aws-events");
 import eventTarget = require("@aws-cdk/aws-events-targets");
 import {StackProps} from "@aws-cdk/core";
 import {CfnRule, IRule, IRuleTarget, RuleTargetConfig} from "@aws-cdk/aws-events";
+import {Runtime} from "inspector";
 
 export class AwsCdkBatchStack extends cdk.Stack {
     constructor(scope: cdk.App, id: string, props?: StackProps) {
@@ -59,7 +62,18 @@ export class AwsCdkBatchStack extends cdk.Stack {
                 },
             ]
         });
-
+        //
+        // const fn = new lambda.Function(this, 'trigger-batch-fn', {
+        //     runtime: lambda.Runtime.NODEJS_10_X,
+        //     timeout: cdk.Duration.seconds(30),
+        //     handler: 'index.handler',
+        //     code: lambda.Code.fromAsset(path.join(__dirname, 'lambda-handler')),
+        //     role: 'arn:aws:iam::885860564745:role/service-role/AWS_Events_Invoke_Batch_Job_Queue_296665447',
+        //
+        // });
+        //
+        //
+        // let lambdaEventTarget = new eventTarget.LambdaFunction(fn);
 
         let event = new events.Rule(this, 'event-rule', {
             description: 'Event rule to submit a batch job to a target job queue on schedule',
@@ -72,7 +86,7 @@ export class AwsCdkBatchStack extends cdk.Stack {
             ruleName: 'batch-job-a-cron-trigger',
             enabled: false,
             schedule: {
-                expressionString: 'cron(0 0 12 1/1 * ? *)'
+                expressionString: 'cron(0 9,18 * * ? *)'
             },
         });
     }
