@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import cdk = require('@aws-cdk/core');
-import { AwsCdkStack } from '../lib/aws-cdk-stack';
+import {AwsCdkBatchStack} from "../lib/aws-cdk-batch-stack";
 
 const app = new cdk.App();
-new AwsCdkStack(app, 'AwsCdkStack');
+new AwsCdkBatchStack(app, 'AwsCdkStack');
