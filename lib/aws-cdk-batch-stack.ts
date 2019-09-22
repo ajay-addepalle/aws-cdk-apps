@@ -43,7 +43,7 @@ export class AwsCdkBatchStack extends cdk.Stack {
                 type: 'EC2',
                 minvCpus: 0,
                 maxvCpus: 1,
-                instanceRole: 'arn:aws:iam::885860564745:role/ecsInstanceRole',
+                instanceRole: 'arn:aws:iam::885860564745:instance-profile/ecsInstanceRole',
                 tags: {
                     'use': 'batch'
                 },
@@ -74,6 +74,14 @@ export class AwsCdkBatchStack extends cdk.Stack {
         //
         //
         // let lambdaEventTarget = new eventTarget.LambdaFunction(fn);
+        //
+        // const hello = new lambda.Function(this, 'Hello-Handler', {
+        //     runtime: lambda.Runtime.NODEJS_10_X,
+        //     code: lambda.Code.fromAsset(path.join(__dirname, '../resources')),
+        //     timeout: cdk.Duration.seconds(30),
+        //     handler: 'hello.handler',
+        // });
+
 
         let event = new events.Rule(this, 'event-rule', {
             description: 'Event rule to submit a batch job to a target job queue on schedule',
