@@ -6,3 +6,11 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+.idea/$PRODUCT_WORKSPACE_FILE$
+.idea/.gitignore
+.idea/aws.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+aws-cdk.iml
+samples/
