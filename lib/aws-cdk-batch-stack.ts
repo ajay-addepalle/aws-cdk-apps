@@ -1,24 +1,18 @@
 import cdk = require("@aws-cdk/core");
 import batch = require("@aws-cdk/aws-batch");
-import lambda = require("@aws-cdk/aws-lambda");
-import path = require('path');
-import cloudwatch = require("@aws-cdk/aws-cloudwatch");
 import events = require("@aws-cdk/aws-events");
-import eventTarget = require("@aws-cdk/aws-events-targets");
 import {StackProps} from "@aws-cdk/core";
-import {CfnRule, IRule, IRuleTarget, RuleTargetConfig} from "@aws-cdk/aws-events";
-import {Runtime} from "inspector";
 
 export class AwsCdkBatchStack extends cdk.Stack {
     constructor(scope: cdk.App, id: string, props?: StackProps) {
         super(scope, id, props);
-        let batchJob = new batch.CfnJobDefinition(this, 'job-def', {
+        let jobDefinition = new batch.CfnJobDefinition(this, 'job-def', {
             jobDefinitionName: 'job-a',
             type: 'container',
             containerProperties: {
                 command: ['echo', 'hello world'],
-                image: 'alpine:3.10',
-                memory: 500,
+                image: '885860564745.dkr.ecr.us-east-2.amazonaws.com/alpine-hello-world:latest',
+                memory: 1000,
                 privileged: false,
                 vcpus: 1,
                 // jobRoleArn: '',
@@ -38,8 +32,13 @@ export class AwsCdkBatchStack extends cdk.Stack {
             serviceRole: "arn:aws:iam::885860564745:role/AWSBatchServiceRole",
             computeResources: {
                 securityGroupIds: ['sg-0495bfafcbf106ea6'],
-                subnets: ['subnet-f91f0091', 'subnet-f91f0091', 'subnet-812c91cd'],
-                instanceTypes: ["a1.medium"],
+                subnets: [
+                    'subnet-f91f0091',
+                    'subnet-cb693cb1',
+                    // 'subnet-812c91cd'
+                ],
+                instanceTypes: ["m4.large"],
+                // instanceTypes: ["a1.medium"],
                 type: 'EC2',
                 minvCpus: 0,
                 maxvCpus: 1,
@@ -47,7 +46,8 @@ export class AwsCdkBatchStack extends cdk.Stack {
                 tags: {
                     'use': 'batch'
                 },
-                // imageId:
+                imageId: 'ami-05d2a15ff7d946a69',           // /aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id
+                // imageId: 'ami-08e0ac9f9ad1578f0',       // 64 bit image
             },
         });
 
@@ -62,6 +62,8 @@ export class AwsCdkBatchStack extends cdk.Stack {
                 },
             ]
         });
+        jobQueue.addDependsOn(computeEnv);
+        jobDefinition.addDependsOn(jobQueue);
         //
         // const fn = new lambda.Function(this, 'trigger-batch-fn', {
         //     runtime: lambda.Runtime.NODEJS_10_X,
